@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import com.example.appviagens.R
 
 @Composable
-fun MenuScreen(navController: NavController) {
+fun MenuScreen(navController: NavController, username: String) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -28,7 +28,7 @@ fun MenuScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        Text(text = "Bem-vindo ao App de Viagens!", fontSize = 24.sp)
+        Text(text = "Bem-vindo, $username, ao App de Viagens!", fontSize = 24.sp)
         Spacer(modifier = Modifier.height(20.dp))
     }
 }
@@ -36,5 +36,5 @@ fun MenuScreen(navController: NavController) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MenuScreenPreview() {
-    MenuScreen(navController = rememberNavController())
+    MenuScreen(navController = rememberNavController(), username = "Usuário")
 }

@@ -17,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
-import com.example.appviagens.R
 import androidx.navigation.NavController
+import com.example.appviagens.R
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -32,7 +32,7 @@ fun LoginScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.viagem_de_negocios), // Substitua pelo seu logo
+            painter = painterResource(id = R.drawable.viagem_de_negocios),
             contentDescription = "Logo do App",
             modifier = Modifier.size(200.dp)
         )
@@ -60,10 +60,19 @@ fun LoginScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(onClick = {
-            if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(context, "Preencha todos os campos!", Toast.LENGTH_SHORT).show()
-            } else {
-                navController.navigate("menu")
+            when {
+                username.isEmpty() || password.isEmpty() -> {
+                    Toast.makeText(context, "Preencha todos os campos!", Toast.LENGTH_SHORT).show()
+                }
+                username.length < 3 -> {
+                    Toast.makeText(context, "O nome de usuário deve ter pelo menos 3 caracteres!", Toast.LENGTH_SHORT).show()
+                }
+                password.length < 6 -> {
+                    Toast.makeText(context, "A senha deve ter pelo menos 6 caracteres!", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    navController.navigate("menu/$username")
+                }
             }
         }) {
             Text(text = "Login", fontSize = 18.sp)

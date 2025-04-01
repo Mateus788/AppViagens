@@ -29,6 +29,8 @@ fun RegisterScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf("") }
+    var passwordError by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -60,21 +62,39 @@ fun RegisterScreen(navController: NavController) {
 
         TextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = {
+                email = it
+                emailError = if (!Patterns.EMAIL_ADDRESS.matcher(it).matches() && it.isNotEmpty()) {
+                    "Digite um e-mail válido!"
+                } else ""
+            },
             label = { Text("E-mail") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(0.8f)
         )
+        if (emailError.isNotEmpty()) {
+            Text(text = emailError, color = Color.Red, fontSize = 12.sp)
+        }
         Spacer(modifier = Modifier.height(10.dp))
 
         TextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                passwordError = when {
+                    it.length < 6 -> "A senha deve ter pelo menos 6 caracteres!"
+                    !it.any { char -> char.isDigit() } -> "A senha deve conter pelo menos um número!"
+                    else -> ""
+                }
+            },
             label = { Text("Senha") },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(0.8f)
         )
+        if (passwordError.isNotEmpty()) {
+            Text(text = passwordError, color = Color.Red, fontSize = 12.sp)
+        }
         Spacer(modifier = Modifier.height(10.dp))
 
         TextField(
@@ -95,8 +115,8 @@ fun RegisterScreen(navController: NavController) {
                 password != confirmPassword -> {
                     Toast.makeText(context, "As senhas não coincidem!", Toast.LENGTH_SHORT).show()
                 }
-                !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                    Toast.makeText(context, "Digite um e-mail válido!", Toast.LENGTH_SHORT).show()
+                emailError.isNotEmpty() || passwordError.isNotEmpty() -> {
+                    Toast.makeText(context, "Corrija os erros antes de registrar!", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     Toast.makeText(context, "Registro realizado com sucesso!", Toast.LENGTH_SHORT).show()
